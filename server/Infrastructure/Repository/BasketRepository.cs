@@ -14,10 +14,10 @@ namespace Infrastructure.Repository
             _context = dataBaseContext;
         }
 
-        public IQueryable<Basket> Get(int id, CancellationToken cancellationToken)
+        public async Task<Basket> Get(int id, CancellationToken cancellationToken)
         {
-            return _context.Baskets.Include(b => b.Items)
-                .Where(b => b.Id == id);
+            return await _context.Baskets.Include(b => b.Items)
+                .Where(b => b.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Basket> Add(Basket basket, CancellationToken cancellationToken)

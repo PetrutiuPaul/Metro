@@ -1,16 +1,15 @@
 ﻿using Application.Interfaces.Repository;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Contracts.Models;
 using MediatR;
 
 namespace Application.Todos.Query
 {
-    public class GetBasketQuery : IRequest<IQueryable<BasketDto>>
+    public class GetBasketQuery : IRequest<BasketDto>
     {
         public int Id { get; set; }
 
-        public class GetBasketHandler : IRequestHandler<GetBasketQuery, IQueryable<BasketDto>>
+        public class GetBasketHandler : IRequestHandler<GetBasketQuery, BasketDto>
         {
             private readonly IBasketRepository _basketRepository;
             private readonly IMapper _mapper;
@@ -21,10 +20,10 @@ namespace Application.Todos.Query
                 _mapper = mapper;
             }
 
-            public Task<IQueryable<BasketDto>> Handle(GetBasketQuery request, CancellationToken cancellationToken)
+            public async Task<BasketDto> Handle(GetBasketQuery request, CancellationToken cancellationToken)
             {
-                var basket = _basketRepository.Get(request.Id, cancellationToken);
-                return Task.FromResult(basket.ProjectTo<BasketDto>(_mapper.ConfigurationProvider));
+                var basket = await _basketRepository.Get(request.Id, cancellationToken);
+                return _mapper.Map<BasketDto>(basket);
             }
         }
     }

@@ -1,8 +1,7 @@
-﻿using Application.Todos.Command;
+﻿using Application.Baskets.Command;
 using Application.Todos.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
 using server.Atributes;
 using System.Threading.Tasks;
 
@@ -35,9 +34,18 @@ namespace server.Controllers
             return Ok(basket);
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Route("{id}/article-line")]
         public async Task<IActionResult> AddArticleLine(int id, [FromBody] AddItemCommand command)
+        {
+            command.BasketId = id;
+            await _mediator.Send(command);
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateBasket(int id, [FromBody] UpdateBasketCommand command)
         {
             command.BasketId = id;
             await _mediator.Send(command);

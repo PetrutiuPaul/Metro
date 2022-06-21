@@ -4,7 +4,7 @@ using Contracts.Models;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Todos.Command
+namespace Application.Baskets.Command
 {
     public class CreateBasketCommand : IRequest<BasketDto>
     {

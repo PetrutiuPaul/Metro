@@ -1,9 +1,8 @@
 ﻿using Application.Interfaces.Repository;
-using AutoMapper;
 using MediatR;
 
 
-namespace Application.Basket.Command
+namespace Application.Baskets.Command
 {
     public class UpdateBasketCommand : IRequest
     {
@@ -18,17 +17,19 @@ namespace Application.Basket.Command
         public class UpdateBasketCommandHandler : IRequestHandler<UpdateBasketCommand>
         {
             private readonly IBasketRepository _basketRepository;
-            private readonly IMapper _mapper;
 
-            public UpdateBasketCommandHandler(IBasketRepository basketRepository, IMapper mapper)
+            public UpdateBasketCommandHandler(IBasketRepository basketRepository)
             {
                 _basketRepository = basketRepository;
-                _mapper = mapper;
             }
-            
-            public Task<Unit> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
+
+            public async Task<Unit> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
             {
-                return Unit.Task;
+                var basket = await _basketRepository.Get(request.BasketId, cancellationToken);
+                basket.Close = request.Close;
+                basket.Payed = request.Payed;
+                await _basketRepository.Update(basket, cancellationToken);
+                return Unit.Value;
             }
         }
     }
